@@ -374,6 +374,7 @@
     <string name="preference_theme_follow_system">Follow system</string>
     <string name="preference_theme_option_light">Light</string>
     <string name="preference_theme_option_dark">Dark</string>
+    <string name="preference_theme_option_black">Black</string>
 
     <string name="pref_language_default">Default Language</string>
 

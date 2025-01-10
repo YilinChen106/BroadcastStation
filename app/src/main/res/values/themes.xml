@@ -38,6 +38,19 @@
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
     </style>
 
+    <style name="Theme.Syncthing.Black" parent="Theme.Syncthing">
+        <item name="android:windowBackground">@android:color/black</item>
+
+        <!-- dialog overrides to make them look better -->
+        <item name="alertDialogTheme">@style/Theme.Syncthing.Dialog.Black</item>
+
+        <!-- idk if this actually does anything lmao -->
+        <item name="android:tabWidgetStyle">@style/Theme.Syncthing.Dialog.Black</item>
+
+        <!-- fixes the tabs at the top in the main view looking out of place -->
+        <item name="tabBackground">@android:color/black</item>
+    </style>
+
     <style name="Theme.Syncthing.Translucent">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
@@ -51,6 +64,12 @@
     <style name="Theme.Syncthing.Dialog" parent="Theme.Material3.DayNight.Dialog.Alert">
         <item name="alertDialogStyle">@style/MaterialAlertDialog.App</item>
         <item name="dialogCornerRadius">28dp</item>
+    </style>
+
+    <style name="Theme.Syncthing.Dialog.Black" parent="Theme.Material3.Dark.Dialog.Alert">
+        <item name="alertDialogStyle">@style/MaterialAlertDialog.App</item>
+
+        <item name="android:background">#121212</item>
     </style>
 
     <!-- Button themes -->
