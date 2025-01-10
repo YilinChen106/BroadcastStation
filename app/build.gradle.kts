@@ -41,12 +41,12 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.nutomic.syncthingandroid"
+        applicationId = "gay.rooot.syncthingandroid"
         minSdk = 21
         targetSdk = 33
         versionCode = 4395
         versionName = "1.28.1"
-        testApplicationId = "com.nutomic.syncthingandroid.test"
+        testApplicationId = "gay.rooot.syncthingandroid.test"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
