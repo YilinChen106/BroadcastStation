@@ -21,7 +21,7 @@ if [ ${CURRENT_TAG} != ${LATEST_TAG} ]; then
     git checkout -f ${LATEST_TAG}
     cd ${PROJECT_DIR}
     git add "syncthing/src/github.com/syncthing/syncthing/"
-    git commit -m "Updated Syncthing to $LATEST_TAG"
+    git commit -m "feat: update syncthing to $LATEST_TAG"
 else
     echo "Syncthing up-to-date at $CURRENT_TAG"
 fi

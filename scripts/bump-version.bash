@@ -52,7 +52,7 @@ sed -i -e "s/versionCode = $OLD_VERSION_CODE/versionCode = $NEW_VERSION_CODE/" "
 OLD_VERSION_NAME=$(grep "versionName" "app/build.gradle.kts" | awk '{print $3}')
 sed -i -e "s/$OLD_VERSION_NAME/\"$1\"/" "app/build.gradle.kts"
 git add "app/build.gradle.kts" $CHANGELOG
-git commit -m "Bumped version to $NEW_VERSION_NAME"
+git commit -m "chore: bump version to $NEW_VERSION_NAME"
 git tag -a ${NEW_VERSION_NAME} -m "
 $NEW_VERSION_NAME
 

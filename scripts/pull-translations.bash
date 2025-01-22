@@ -18,5 +18,5 @@ git add -A "app/src/main/play/"
 git add -A "app/src/main/res/values-*/strings.xml"
 if ! git diff --cached --exit-code >/dev/null;
 then
-    git commit -m "Imported translations"
+    git commit -m "feat: import translations"
 fi
