@@ -12,7 +12,7 @@ on:
 env:
   # Our build metadata
   BUILD_USER: android-builder
-  BUILD_HOST: github.syncthing.net
+  BUILD_HOST: github.syncmeow.deranged.network
 
 jobs:
   release:
@@ -35,7 +35,7 @@ jobs:
 
       - name: build_release
         env:
-          SYNCTHING_RELEASE_KEY_ALIAS: android
+          SYNCTHING_RELEASE_KEY_ALIAS: meowzers
           SIGNING_PASSWORD: '${{ secrets.SIGNING_PASSWORD }}'
           SYNCTHING_RELEASE_STORE_FILE: '${{ runner.temp }}/signing-keystore.jks'
           SYNCTHING_RELEASE_PLAY_ACCOUNT_CONFIG_FILE: '${{ runner.temp }}/google-play-secrets.json'
@@ -43,20 +43,22 @@ jobs:
         run: |
           set -eu -o pipefail
           echo '${{ secrets.SIGNING_KEYSTORE_JKS_BASE64 }}' | base64 -d > "$SYNCTHING_RELEASE_STORE_FILE"
-          echo '${{ secrets.GOOGLE_PLAY_SECRETS_BASE64 }}' | base64 -d > "$SYNCTHING_RELEASE_PLAY_ACCOUNT_CONFIG_FILE"
+          #echo '${{ secrets.GOOGLE_PLAY_SECRETS_BASE64 }}' | base64 -d > "$SYNCTHING_RELEASE_PLAY_ACCOUNT_CONFIG_FILE"
           java -version
           # TODO: Readd publishReleaseBundle if google play works again, or
           # remove everything related to publishing to google play.
           ./gradlew --no-daemon buildNative lint assembleRelease bundleRelease
           rm "$SYNCTHING_RELEASE_STORE_FILE" "$SYNCTHING_RELEASE_PLAY_ACCOUNT_CONFIG_FILE"
 
-          echo '${{ secrets.GNUPG_SIGNING_KEY_BASE64 }}' | base64 -d | gpg --import
+          #echo '${{ secrets.GNUPG_SIGNING_KEY_BASE64 }}' | base64 -d | gpg --import
           cd app/build/outputs/apk/release
-          sha256sum app-release.apk | gpg --clearsign > sha256sum.txt.asc
+          # too lazy to set this up (for now)
+          #sha256sum app-release.apk | gpg --clearsign > sha256sum.txt.asc
+          sha256sum app-release.apk > sha256sum.txt
 
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "app/build/outputs/apk/release/*.apk,app/build/outputs/apk/release/*.asc"
+          artifacts: "app/build/outputs/apk/release/*.apk,app/build/outputs/apk/release/*.txt"
           artifactErrorsFailBuild: true
           bodyFile: "app/src/main/play/release-notes/en-GB/default.txt"
           prerelease: ${{ contains('-rc.', github.ref_name) }}
