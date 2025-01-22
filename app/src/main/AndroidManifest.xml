@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.nutomic.syncthingandroid">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
@@ -138,8 +137,8 @@
             tools:ignore="ExportedReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.nutomic.syncthingandroid.action.START" />
-                <action android:name="com.nutomic.syncthingandroid.action.STOP" />
+                <action android:name="gay.rooot.syncthingandroid.action.START" />
+                <action android:name="gay.rooot.syncthingandroid.action.STOP" />
             </intent-filter>
         </receiver>
         <activity android:name=".activities.FolderTypeDialogActivity"

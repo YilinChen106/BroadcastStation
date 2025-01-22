@@ -4,6 +4,8 @@ plugins {
     id("com.android.application")
     id("com.github.ben-manes.versions")
     id("com.github.triplet.play") version "3.7.0"
+    // this is required even if we don't use kotlin, else it'll error everywhere
+    id("org.jetbrains.kotlin.android") version "2.0.0"
 }
 
 dependencies {
@@ -44,8 +46,8 @@ android {
         applicationId = "gay.rooot.syncthingandroid"
         minSdk = 21
         targetSdk = 33
-        versionCode = 4395
-        versionName = "1.28.1"
+        versionCode = 4396
+        versionName = "1.29.1"
         testApplicationId = "gay.rooot.syncthingandroid.test"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -86,6 +88,7 @@ android {
             useLegacyPackaging = true
         }
     }
+    namespace = "com.nutomic.syncthingandroid"
 }
 
 play {
