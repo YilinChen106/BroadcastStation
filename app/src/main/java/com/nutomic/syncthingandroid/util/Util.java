@@ -149,12 +149,10 @@ public class Util {
         int exitCode = runShellCommand("echo \"\" > \"" + touchFile + "\"\n", useRoot);
         if (exitCode != 0) {
             String error;
-            switch (exitCode) {
-                case 1:
-                    error = "Permission denied";
-                    break;
-                default:
-                    error = "Shell execution failed";
+            if (exitCode == 1) {
+                error = "Permission denied";
+            } else {
+                error = "Shell execution failed";
             }
             Log.i(TAG, "Failed to write test file '" + touchFile +
                 "', " + error);

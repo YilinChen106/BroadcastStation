@@ -104,28 +104,26 @@ public class EventProcessor implements  Runnable, RestApi.OnReceiveEventListener
             mapData = (Map<String,Object>) event.data;
         } catch (ClassCastException e) { }
         switch (event.type) {
-            case "ConfigSaved":
+            case "ConfigSaved" -> {
                 if (mApi != null) {
                     Log.v(TAG, "Forwarding ConfigSaved event to RestApi to get the updated config.");
                     mApi.reloadConfig();
                 }
-                break;
-            case "PendingDevicesChanged":
-                mapNullable((List<Map<String,String>>) mapData.get("added"), this::onPendingDevicesChanged);
-                break;
-            case "FolderCompletion":
+            }
+            case "PendingDevicesChanged" ->
+                    mapNullable((List<Map<String, String>>) mapData.get("added"), this::onPendingDevicesChanged);
+            case "FolderCompletion" -> {
                 CompletionInfo completionInfo = new CompletionInfo();
                 completionInfo.completion = (Double) mapData.get("completion");
                 mApi.setCompletionInfo(
-                    (String) mapData.get("device"),          // deviceId
-                    (String) mapData.get("folder"),          // folderId
-                    completionInfo
+                        (String) mapData.get("device"),          // deviceId
+                        (String) mapData.get("folder"),          // folderId
+                        completionInfo
                 );
-                break;
-            case "PendingFoldersChanged":
-                mapNullable((List<Map<String,String>>) mapData.get("added"), this::onPendingFoldersChanged);
-                break;
-            case "ItemFinished":
+            }
+            case "PendingFoldersChanged" ->
+                    mapNullable((List<Map<String, String>>) mapData.get("added"), this::onPendingFoldersChanged);
+            case "ItemFinished" -> {
                 String folder = (String) mapData.get("folder");
                 String folderPath = null;
                 for (Folder f : mApi.getFolders()) {
@@ -158,31 +156,19 @@ public class EventProcessor implements  Runnable, RestApi.OnReceiveEventListener
                     resolver.delete(contentUri, MediaStore.Images.ImageColumns.DATA + " = ?",
                             new String[]{updatedFile.getPath()});
                 }
-                break;
-            case "Ping":
+            }
+            case "Ping" -> {
                 // Ignored.
-                break;
-            case "DeviceConnected":
-            case "DeviceDisconnected":
-            case "DeviceDiscovered":
-            case "DownloadProgress":
-            case "FolderPaused":
-            case "FolderScanProgress":
-            case "FolderSummary":
-            case "ItemStarted":
-            case "LocalIndexUpdated":
-            case "LoginAttempt":
-            case "RemoteDownloadProgress":
-            case "RemoteIndexUpdated":
-            case "Starting":
-            case "StartupComplete":
-            case "StateChanged":
+            }
+            case "DeviceConnected", "DeviceDisconnected", "DeviceDiscovered", "DownloadProgress",
+                 "FolderPaused", "FolderScanProgress", "FolderSummary", "ItemStarted",
+                 "LocalIndexUpdated", "LoginAttempt", "RemoteDownloadProgress",
+                 "RemoteIndexUpdated", "Starting", "StartupComplete", "StateChanged" -> {
                 if (BuildConfig.DEBUG) {
                     Log.v(TAG, "Ignored event " + event.type + ", data " + event.data);
                 }
-                break;
-            default:
-                Log.v(TAG, "Unhandled event " + event.type);
+            }
+            default -> Log.v(TAG, "Unhandled event " + event.type);
         }
     }
 

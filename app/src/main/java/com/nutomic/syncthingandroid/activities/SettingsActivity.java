@@ -371,7 +371,7 @@ public class SettingsActivity extends SyncthingActivity {
 
         public boolean onRunConditionPreferenceChange(Preference preference, Object o) {
             switch (preference.getKey()) {
-                case Constants.PREF_RUN_CONDITIONS:
+                case Constants.PREF_RUN_CONDITIONS -> {
                     boolean enabled = (Boolean) o;
                     for (int index = 1; index < mCategoryRunConditions.getPreferenceCount(); ++index) {
                         mCategoryRunConditions.getPreference(index).setEnabled(enabled);
@@ -380,22 +380,22 @@ public class SettingsActivity extends SyncthingActivity {
                         mRunOnMeteredWifi.setEnabled(mRunOnWifi.isChecked());
                         mWifiSsidWhitelist.setEnabled(mRunOnWifi.isChecked());
                     }
-                    break;
-                case Constants.PREF_POWER_SOURCE:
+                }
+                case Constants.PREF_POWER_SOURCE -> {
                     mPowerSource.setValue(o.toString());
                     preference.setSummary(mPowerSource.getEntry());
-                    break;
-                case Constants.PREF_RUN_ON_WIFI:
+                }
+                case Constants.PREF_RUN_ON_WIFI -> {
                     mRunOnMeteredWifi.setEnabled((Boolean) o);
                     mWifiSsidWhitelist.setEnabled((Boolean) o);
-                    break;
-                case Constants.PREF_WIFI_SSID_WHITELIST:
+                }
+                case Constants.PREF_WIFI_SSID_WHITELIST -> {
                     String wifiSsidSummary = TextUtils.join(", ", (Set<String>) o);
                     preference.setSummary(TextUtils.isEmpty(wifiSsidSummary) ?
-                        getString(R.string.run_on_all_wifi_networks) :
-                        getString(R.string.run_on_whitelisted_wifi_networks, wifiSsidSummary)
+                            getString(R.string.run_on_all_wifi_networks) :
+                            getString(R.string.run_on_whitelisted_wifi_networks, wifiSsidSummary)
                     );
-                    break;
+                }
             }
             mPendingRunConditions = true;
             return true;
@@ -404,16 +404,15 @@ public class SettingsActivity extends SyncthingActivity {
         public boolean onSyncthingPreferenceChange(Preference preference, Object o) {
             Splitter splitter = Splitter.on(",").trimResults().omitEmptyStrings();
             switch (preference.getKey()) {
-                case "deviceName":
+                case "deviceName" -> {
                     Device localDevice = mApi.getLocalDevice();
                     localDevice.name = (String) o;
                     mApi.editDevice(localDevice);
-                    break;
-                case "listenAddresses":
-                    mOptions.listenAddresses = Iterables.toArray(splitter.split((String) o), String.class);
-                    break;
-                case "maxRecvKbps":
-                    int maxRecvKbps = 0;
+                }
+                case "listenAddresses" ->
+                        mOptions.listenAddresses = Iterables.toArray(splitter.split((String) o), String.class);
+                case "maxRecvKbps" -> {
+                    int maxRecvKbps;
                     try {
                         maxRecvKbps = Integer.parseInt((String) o);
                     } catch (Exception e) {
@@ -422,9 +421,9 @@ public class SettingsActivity extends SyncthingActivity {
                         return false;
                     }
                     mOptions.maxRecvKbps = maxRecvKbps;
-                    break;
-                case "maxSendKbps":
-                    int maxSendKbps = 0;
+                }
+                case "maxSendKbps" -> {
+                    int maxSendKbps;
                     try {
                         maxSendKbps = Integer.parseInt((String) o);
                     } catch (Exception e) {
@@ -433,33 +432,20 @@ public class SettingsActivity extends SyncthingActivity {
                         return false;
                     }
                     mOptions.maxSendKbps = maxSendKbps;
-                    break;
-                case "natEnabled":
-                    mOptions.natEnabled = (boolean) o;
-                    break;
-                case "localAnnounceEnabled":
-                    mOptions.localAnnounceEnabled = (boolean) o;
-                    break;
-                case "globalAnnounceEnabled":
-                    mOptions.globalAnnounceEnabled = (boolean) o;
-                    break;
-                case "relaysEnabled":
-                    mOptions.relaysEnabled = (boolean) o;
-                    break;
-                case "globalAnnounceServers":
-                    mOptions.globalAnnounceServers = Iterables.toArray(splitter.split((String) o), String.class);
-                    break;
-                case "address":
-                    mGui.address = (String) o;
-                    break;
-                case "urAccepted":
-                    mApi.getSystemInfo(systemInfo -> {
-                        mOptions.urAccepted = ((boolean) o)
-                                ? systemInfo.urVersionMax
-                                : Options.USAGE_REPORTING_DENIED;
-                    });
-                    break;
-                default: throw new InvalidParameterException();
+                }
+                case "natEnabled" -> mOptions.natEnabled = (boolean) o;
+                case "localAnnounceEnabled" -> mOptions.localAnnounceEnabled = (boolean) o;
+                case "globalAnnounceEnabled" -> mOptions.globalAnnounceEnabled = (boolean) o;
+                case "relaysEnabled" -> mOptions.relaysEnabled = (boolean) o;
+                case "globalAnnounceServers" ->
+                        mOptions.globalAnnounceServers = Iterables.toArray(splitter.split((String) o), String.class);
+                case "address" -> mGui.address = (String) o;
+                case "urAccepted" -> mApi.getSystemInfo(systemInfo -> {
+                    mOptions.urAccepted = ((boolean) o)
+                            ? systemInfo.urVersionMax
+                            : Options.USAGE_REPORTING_DENIED;
+                });
+                default -> throw new InvalidParameterException();
             }
 
             mApi.editSettings(mGui, mOptions);
@@ -492,28 +478,23 @@ public class SettingsActivity extends SyncthingActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object o) {
             switch (preference.getKey()) {
-                case Constants.PREF_DEBUG_FACILITIES_ENABLED:
-                    mPendingConfig = true;
-                    break;
-                case Constants.PREF_ENVIRONMENT_VARIABLES:
+                case Constants.PREF_DEBUG_FACILITIES_ENABLED -> mPendingConfig = true;
+                case Constants.PREF_ENVIRONMENT_VARIABLES -> {
                     if (((String) o).matches("^(\\w+=[\\w:/\\.]+)?( \\w+=[\\w:/\\.]+)*$")) {
                         mPendingConfig = true;
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getActivity(), R.string.toast_invalid_environment_variables, Toast.LENGTH_SHORT)
                                 .show();
                         return false;
                     }
-                    break;
-                case Constants.PREF_USE_WAKE_LOCK:
-                    mPendingConfig = true;
-                    break;
-                case Constants.PREF_USE_TOR:
+                }
+                case Constants.PREF_USE_WAKE_LOCK -> mPendingConfig = true;
+                case Constants.PREF_USE_TOR -> {
                     mSocksProxyAddress.setEnabled(!(Boolean) o);
                     mHttpProxyAddress.setEnabled(!(Boolean) o);
                     mPendingConfig = true;
-                    break;
-                case Constants.PREF_SOCKS_PROXY_ADDRESS:
+                }
+                case Constants.PREF_SOCKS_PROXY_ADDRESS -> {
                     if (o.toString().trim().equals(mPreferences.getString(Constants.PREF_SOCKS_PROXY_ADDRESS, "")))
                         return false;
                     if (handleSocksProxyPreferenceChange(preference, o.toString().trim())) {
@@ -521,8 +502,8 @@ public class SettingsActivity extends SyncthingActivity {
                     } else {
                         return false;
                     }
-                    break;
-                case Constants.PREF_HTTP_PROXY_ADDRESS:
+                }
+                case Constants.PREF_HTTP_PROXY_ADDRESS -> {
                     if (o.toString().trim().equals(mPreferences.getString(Constants.PREF_HTTP_PROXY_ADDRESS, "")))
                         return false;
                     if (handleHttpProxyPreferenceChange(preference, o.toString().trim())) {
@@ -530,14 +511,13 @@ public class SettingsActivity extends SyncthingActivity {
                     } else {
                         return false;
                     }
-                    break;
-                case Constants.PREF_APP_THEME:
-                    // Recreate activities with the correct colors
-                    TaskStackBuilder.create(getActivity())
-                            .addNextIntent(new Intent(getActivity(), MainActivity.class))
-                            .addNextIntent(getActivity().getIntent())
-                            .startActivities();
-                    break;
+                }
+                case Constants.PREF_APP_THEME ->
+                        // Recreate activities with the correct colors
+                        TaskStackBuilder.create(getActivity())
+                                .addNextIntent(new Intent(getActivity(), MainActivity.class))
+                                .addNextIntent(getActivity().getIntent())
+                                .startActivities();
             }
 
             return true;
@@ -547,7 +527,7 @@ public class SettingsActivity extends SyncthingActivity {
         public boolean onPreferenceClick(Preference preference) {
             final Intent intent;
             switch (preference.getKey()) {
-                case Constants.PREF_USE_ROOT:
+                case Constants.PREF_USE_ROOT -> {
                     if (mUseRoot.isChecked()) {
                         // Only check preference after root was granted.
                         mUseRoot.setChecked(false);
@@ -557,38 +537,41 @@ public class SettingsActivity extends SyncthingActivity {
                         mPendingConfig = true;
                     }
                     return true;
-                case KEY_EXPORT_CONFIG:
+                }
+                case KEY_EXPORT_CONFIG -> {
                     Util.getAlertDialogBuilder(getActivity())
                             .setMessage(R.string.dialog_confirm_export)
                             .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                                        mSyncthingService.exportConfig();
-                                        Toast.makeText(getActivity(),
-                                                getString(R.string.config_export_successful,
+                                mSyncthingService.exportConfig();
+                                Toast.makeText(getActivity(),
+                                        getString(R.string.config_export_successful,
                                                 Constants.EXPORT_PATH), Toast.LENGTH_LONG).show();
-                                    })
+                            })
                             .setNegativeButton(android.R.string.no, null)
                             .show();
                     return true;
-                case KEY_IMPORT_CONFIG:
+                }
+                case KEY_IMPORT_CONFIG -> {
                     Util.getAlertDialogBuilder(getActivity())
                             .setMessage(R.string.dialog_confirm_import)
                             .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                                        if (mSyncthingService.importConfig()) {
-                                            Toast.makeText(getActivity(),
-                                                    getString(R.string.config_imported_successful),
-                                                    Toast.LENGTH_SHORT).show();
-                                            // No need to restart, as we shutdown to import the config, and
-                                            // then have to start Syncthing again.
-                                        } else {
-                                            Toast.makeText(getActivity(),
-                                                    getString(R.string.config_import_failed,
+                                if (mSyncthingService.importConfig()) {
+                                    Toast.makeText(getActivity(),
+                                            getString(R.string.config_imported_successful),
+                                            Toast.LENGTH_SHORT).show();
+                                    // No need to restart, as we shutdown to import the config, and
+                                    // then have to start Syncthing again.
+                                } else {
+                                    Toast.makeText(getActivity(),
+                                            getString(R.string.config_import_failed,
                                                     Constants.EXPORT_PATH), Toast.LENGTH_LONG).show();
-                                        }
-                                    })
+                                }
+                            })
                             .setNegativeButton(android.R.string.no, null)
                             .show();
                     return true;
-                case KEY_UNDO_IGNORED_DEVICES_FOLDERS:
+                }
+                case KEY_UNDO_IGNORED_DEVICES_FOLDERS -> {
                     Util.getAlertDialogBuilder(getActivity())
                             .setMessage(R.string.undo_ignored_devices_folders_question)
                             .setPositiveButton(android.R.string.yes, (dialog, which) -> {
@@ -607,7 +590,8 @@ public class SettingsActivity extends SyncthingActivity {
                             .setNegativeButton(android.R.string.no, null)
                             .show();
                     return true;
-                case KEY_ST_RESET_DATABASE:
+                }
+                case KEY_ST_RESET_DATABASE -> {
                     intent = new Intent(getActivity(), SyncthingService.class)
                             .setAction(SyncthingService.ACTION_RESET_DATABASE);
 
@@ -622,7 +606,8 @@ public class SettingsActivity extends SyncthingActivity {
                             })
                             .show();
                     return true;
-                case KEY_ST_RESET_DELTAS:
+                }
+                case KEY_ST_RESET_DELTAS -> {
                     intent = new Intent(getActivity(), SyncthingService.class)
                             .setAction(SyncthingService.ACTION_RESET_DELTAS);
 
@@ -637,8 +622,10 @@ public class SettingsActivity extends SyncthingActivity {
                             })
                             .show();
                     return true;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
 

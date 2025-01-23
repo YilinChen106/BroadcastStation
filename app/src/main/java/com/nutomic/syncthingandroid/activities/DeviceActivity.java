@@ -124,14 +124,14 @@ public class DeviceActivity extends SyncthingActivity implements View.OnClickLis
         @Override
         public void onCheckedChanged(CompoundButton view, boolean isChecked) {
             switch (view.getId()) {
-                case R.id.introducer:
+                case R.id.introducer -> {
                     mDevice.introducer = isChecked;
                     mDeviceNeedsToUpdate = true;
-                    break;
-                case R.id.devicePause:
+                }
+                case R.id.devicePause -> {
                     mDevice.paused = isChecked;
                     mDeviceNeedsToUpdate = true;
-                    break;
+                }
             }
         }
     };
@@ -313,29 +313,32 @@ public class DeviceActivity extends SyncthingActivity implements View.OnClickLis
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.create:
+        return switch (item.getItemId()) {
+            case R.id.create -> {
                 if (isEmpty(mDevice.deviceID)) {
                     Toast.makeText(this, R.string.device_id_required, Toast.LENGTH_LONG)
                             .show();
-                    return true;
+                    yield true;
                 }
                 getApi().addDevice(mDevice, error ->
                         Toast.makeText(this, error, Toast.LENGTH_LONG).show());
                 finish();
-                return true;
-            case R.id.share_device_id:
+                yield true;
+            }
+            case R.id.share_device_id -> {
                 shareDeviceId(this, mDevice.deviceID);
-                return true;
-            case R.id.remove:
-               showDeleteDialog();
-                return true;
-            case android.R.id.home:
+                yield true;
+            }
+            case R.id.remove -> {
+                showDeleteDialog();
+                yield true;
+            }
+            case android.R.id.home -> {
                 onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+                yield true;
+            }
+            default -> super.onOptionsItemSelected(item);
+        };
     }
 
 

@@ -36,16 +36,14 @@ public class AppConfigReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         ((SyncthingApp) context.getApplicationContext()).component().inject(this);
         switch (intent.getAction()) {
-            case ACTION_START:
-                BootReceiver.startServiceCompat(context);
-                break;
-            case ACTION_STOP:
+            case ACTION_START -> BootReceiver.startServiceCompat(context);
+            case ACTION_STOP -> {
                 if (startServiceOnBoot(context)) {
                     mNotificationHandler.showStopSyncthingWarningNotification();
                 } else {
                     context.stopService(new Intent(context, SyncthingService.class));
                 }
-                break;
+            }
         }
     }
 

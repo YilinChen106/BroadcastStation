@@ -33,14 +33,11 @@ public enum Compression {
     }
 
     public static Compression fromIndex(int index) {
-        switch (index) {
-            case 0:
-                return NONE;
-            case 2:
-                return ALWAYS;
-            default:
-                return METADATA;
-        }
+        return switch (index) {
+            case 0 -> NONE;
+            case 2 -> ALWAYS;
+            default -> METADATA;
+        };
     }
 
     public static Compression fromValue(Context context, String value) {

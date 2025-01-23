@@ -182,8 +182,8 @@ public class FolderPickerActivity extends SyncthingActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.create_folder:
+        return switch (item.getItemId()) {
+            case R.id.create_folder -> {
                 final EditText et = new EditText(this);
                 AlertDialog dialog = Util.getAlertDialogBuilder(this)
                         .setTitle(R.string.create_folder)
@@ -196,19 +196,21 @@ public class FolderPickerActivity extends SyncthingActivity
                 dialog.setOnShowListener(dialogInterface -> ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
                         .showSoftInput(et, InputMethodManager.SHOW_IMPLICIT));
                 dialog.show();
-                return true;
-            case R.id.select:
+                yield true;
+            }
+            case R.id.select -> {
                 Intent intent = new Intent()
                         .putExtra(EXTRA_RESULT_DIRECTORY, Util.formatPath(mLocation.getAbsolutePath()));
                 setResult(Activity.RESULT_OK, intent);
                 finish();
-                return true;
-            case android.R.id.home:
+                yield true;
+            }
+            case android.R.id.home -> {
                 finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+                yield true;
+            }
+            default -> super.onOptionsItemSelected(item);
+        };
     }
 
     /**

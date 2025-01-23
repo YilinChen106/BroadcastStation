@@ -186,14 +186,11 @@ public class MainActivity extends StateDialogActivity
 
                 @Override
                 public Fragment getItem(int position) {
-                    switch (position) {
-                        case 0:
-                            return mFolderListFragment;
-                        case 1:
-                            return mDeviceListFragment;
-                        default:
-                            return null;
-                    }
+                    return switch (position) {
+                        case 0 -> mFolderListFragment;
+                        case 1 -> mDeviceListFragment;
+                        default -> null;
+                    };
                 }
 
                 @Override
@@ -203,14 +200,11 @@ public class MainActivity extends StateDialogActivity
 
                 @Override
                 public CharSequence getPageTitle(int position) {
-                    switch (position) {
-                        case 0:
-                            return getResources().getString(R.string.folders_fragment_title);
-                        case 1:
-                            return getResources().getString(R.string.devices_fragment_title);
-                        default:
-                            return String.valueOf(position);
-                    }
+                    return switch (position) {
+                        case 0 -> getResources().getString(R.string.folders_fragment_title);
+                        case 1 -> getResources().getString(R.string.devices_fragment_title);
+                        default -> String.valueOf(position);
+                    };
                 }
             };
 

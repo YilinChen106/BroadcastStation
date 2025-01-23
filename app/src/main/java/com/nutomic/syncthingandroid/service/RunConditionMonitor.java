@@ -187,21 +187,19 @@ public class RunConditionMonitor {
 
         // PREF_POWER_SOURCE
         switch (prefPowerSource) {
-            case POWER_SOURCE_CHARGER:
+            case POWER_SOURCE_CHARGER -> {
                 if (!isCharging()) {
                     Log.v(TAG, "decideShouldRun: POWER_SOURCE_AC && !isCharging");
                     blockerReasons.add(ON_BATTERY);
                 }
-                break;
-            case POWER_SOURCE_BATTERY:
+            }
+            case POWER_SOURCE_BATTERY -> {
                 if (isCharging()) {
                     Log.v(TAG, "decideShouldRun: POWER_SOURCE_BATTERY && isCharging");
                     blockerReasons.add(ON_CHARGER);
                 }
-                break;
-            case POWER_SOURCE_CHARGER_BATTERY:
-            default:
-                break;
+            }
+            default -> {}
         }
 
         // Power saving
@@ -341,15 +339,11 @@ public class RunConditionMonitor {
             // No network connection.
             return false;
         }
-        switch (ni.getType()) {
-            case ConnectivityManager.TYPE_BLUETOOTH:
-            case ConnectivityManager.TYPE_MOBILE:
-            case ConnectivityManager.TYPE_MOBILE_DUN:
-            case ConnectivityManager.TYPE_MOBILE_HIPRI:
-                return true;
-            default:
-                return false;
-        }
+        return switch (ni.getType()) {
+            case ConnectivityManager.TYPE_BLUETOOTH, ConnectivityManager.TYPE_MOBILE,
+                 ConnectivityManager.TYPE_MOBILE_DUN, ConnectivityManager.TYPE_MOBILE_HIPRI -> true;
+            default -> false;
+        };
     }
 
     private boolean isWifiOrEthernetConnection() {
@@ -363,14 +357,11 @@ public class RunConditionMonitor {
             // No network connection.
             return false;
         }
-        switch (ni.getType()) {
-            case ConnectivityManager.TYPE_WIFI:
-            case ConnectivityManager.TYPE_WIMAX:
-            case ConnectivityManager.TYPE_ETHERNET:
-                return true;
-            default:
-                return false;
-        }
+        return switch (ni.getType()) {
+            case ConnectivityManager.TYPE_WIFI, ConnectivityManager.TYPE_WIMAX,
+                 ConnectivityManager.TYPE_ETHERNET -> true;
+            default -> false;
+        };
     }
 
     private boolean isWifiConnectionWhitelisted(Set<String> whitelistedSsids) {

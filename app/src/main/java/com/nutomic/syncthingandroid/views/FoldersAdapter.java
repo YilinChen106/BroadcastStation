@@ -113,17 +113,13 @@ public class FoldersAdapter extends ArrayAdapter<Folder> {
                 binding.state.setTextColor(MaterialColors.getColor(mContext, android.R.attr.textColorPrimary, Color.BLACK));
             } else {
                 binding.state.setText(getLocalizedState(mContext, folderStatus));
-                switch(folderStatus.state) {
-                    case "idle":
-                        binding.state.setTextColor(ContextCompat.getColor(mContext, R.color.text_green));
-                        break;
-                    case "scanning":
-                    case "syncing":
-                        binding.state.setTextColor(ContextCompat.getColor(mContext, R.color.text_blue));
-                        break;
-                    case "error":
-                    default:
-                        binding.state.setTextColor(ContextCompat.getColor(mContext, R.color.text_red));
+                switch (folderStatus.state) {
+                    case "idle" ->
+                            binding.state.setTextColor(ContextCompat.getColor(mContext, R.color.text_green));
+                    case "scanning", "syncing" ->
+                            binding.state.setTextColor(ContextCompat.getColor(mContext, R.color.text_blue));
+                    default ->
+                            binding.state.setTextColor(ContextCompat.getColor(mContext, R.color.text_red));
                 }
             }
         }
@@ -141,26 +137,24 @@ public class FoldersAdapter extends ArrayAdapter<Folder> {
      * Returns the folder's state as a localized string.
      */
     private static String getLocalizedState(Context c, FolderStatus folderStatus) {
-        switch (folderStatus.state) {
-            case "idle":
-                return c.getString(R.string.state_idle);
-            case "scanning":
-                return c.getString(R.string.state_scanning);
-            case "syncing":
+        return switch (folderStatus.state) {
+            case "idle" -> c.getString(R.string.state_idle);
+            case "scanning" -> c.getString(R.string.state_scanning);
+            case "syncing" -> {
                 int percentage = (folderStatus.globalBytes != 0)
                         ? Math.round(100 * folderStatus.inSyncBytes / folderStatus.globalBytes)
                         : 100;
-                return c.getString(R.string.state_syncing, percentage);
-            case "error":
+                yield c.getString(R.string.state_syncing, percentage);
+            }
+            case "error" -> {
                 if (TextUtils.isEmpty(folderStatus.error)) {
-                    return c.getString(R.string.state_error);
+                    yield c.getString(R.string.state_error);
                 }
-                return c.getString(R.string.state_error) + " (" + folderStatus.error + ")";
-            case "unknown":
-                return c.getString(R.string.state_unknown);
-            default:
-                return folderStatus.state;
-        }
+                yield c.getString(R.string.state_error) + " (" + folderStatus.error + ")";
+            }
+            case "unknown" -> c.getString(R.string.state_unknown);
+            default -> folderStatus.state;
+        };
     }
 
     /**

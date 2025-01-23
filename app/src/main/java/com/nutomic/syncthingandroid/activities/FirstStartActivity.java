@@ -147,7 +147,7 @@ public class FirstStartActivity extends Activity {
         Slide slide = currentSlide();
         // Check if we are allowed to advance to the next slide.
         switch (slide) {
-            case STORAGE:
+            case STORAGE -> {
                 // As the storage permission is a prerequisite to run syncthing, refuse to continue without it.
                 Boolean storagePermissionsGranted = PermissionUtil.haveStoragePermission(this);
                 if (!storagePermissionsGranted) {
@@ -155,14 +155,14 @@ public class FirstStartActivity extends Activity {
                             Toast.LENGTH_LONG).show();
                     return;
                 }
-                break;
-            case API_LEVEL_30:
+            }
+            case API_LEVEL_30 -> {
                 if (!upgradedToApiLevel30()) {
                     Toast.makeText(this, R.string.toast_api_level_30_must_reset,
                             Toast.LENGTH_LONG).show();
                     return;
                 }
-                break;
+            }
         }
 
         int next = binding.viewPager.getCurrentItem() + 1;
@@ -229,22 +229,16 @@ public class FirstStartActivity extends Activity {
     }
 
     private boolean shouldSkipSlide(Slide slide) {
-        switch (slide) {
-            case INTRO:
-                return !isFirstStart();
-            case STORAGE:
-                return PermissionUtil.haveStoragePermission(this);
-            case LOCATION:
-                return hasLocationPermission();
-            case API_LEVEL_30:
+        return switch (slide) {
+            case INTRO -> !isFirstStart();
+            case STORAGE -> PermissionUtil.haveStoragePermission(this);
+            case LOCATION -> hasLocationPermission();
+            case API_LEVEL_30 ->
                 // Skip if running as root, as that circumvents any Android FS restrictions.
-                return upgradedToApiLevel30()
-                        || mPreferences.getBoolean(Constants.PREF_USE_ROOT, false);
-            case NOTIFICATION:
-                return isNotificationPermissionGranted();
-
-        }
-        return false;
+                    upgradedToApiLevel30()
+                            || mPreferences.getBoolean(Constants.PREF_USE_ROOT, false);
+            case NOTIFICATION -> isNotificationPermissionGranted();
+        };
     }
 
     private void addBottomDots() {
@@ -304,10 +298,8 @@ public class FirstStartActivity extends Activity {
             View view = layoutInflater.inflate(slides[position].layout, container, false);
 
             switch (slides[position]) {
-                case INTRO:
-                    break;
-
-                case STORAGE:
+                case INTRO -> {}
+                case STORAGE -> {
                     Button btnGrantStoragePerm = (Button) view.findViewById(R.id.btnGrantStoragePerm);
                     btnGrantStoragePerm.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -315,9 +307,8 @@ public class FirstStartActivity extends Activity {
                             requestStoragePermission();
                         }
                     });
-                    break;
-
-                case LOCATION:
+                }
+                case LOCATION -> {
                     Button btnGrantLocationPerm = (Button) view.findViewById(R.id.btnGrantLocationPerm);
                     btnGrantLocationPerm.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -325,9 +316,8 @@ public class FirstStartActivity extends Activity {
                             requestLocationPermission();
                         }
                     });
-                    break;
-
-                case API_LEVEL_30:
+                }
+                case API_LEVEL_30 -> {
                     Button btnResetDatabase = (Button) view.findViewById(R.id.btnResetDatabase);
                     btnResetDatabase.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -336,8 +326,8 @@ public class FirstStartActivity extends Activity {
                             onBtnNextClick();
                         }
                     });
-                    break;
-                case NOTIFICATION:
+                }
+                case NOTIFICATION -> {
                     Button notificationBtn = (Button) view.findViewById(R.id.btn_notification);
                     notificationBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -345,7 +335,7 @@ public class FirstStartActivity extends Activity {
                             requestNotificationPermission();
                         }
                     });
-                    break;
+                }
             }
 
             container.addView(view);
@@ -446,7 +436,7 @@ public class FirstStartActivity extends Activity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         switch (Constants.PermissionRequestType.values()[requestCode]) {
-            case LOCATION:
+            case LOCATION -> {
                 if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Log.i(TAG, "User denied foreground location permission");
                     break;
@@ -457,16 +447,16 @@ public class FirstStartActivity extends Activity {
                             PermissionUtil.getLocationPermissions(),
                             Constants.PermissionRequestType.LOCATION_BACKGROUND.ordinal());
                 }
-                break;
-            case LOCATION_BACKGROUND:
+            }
+            case LOCATION_BACKGROUND -> {
                 if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Log.i(TAG, "User denied background location permission");
                     break;
                 }
                 Log.i(TAG, "User granted background location permission");
                 Toast.makeText(this, R.string.permission_granted, Toast.LENGTH_SHORT).show();
-                break;
-            case STORAGE:
+            }
+            case STORAGE -> {
                 if (grantResults.length == 0 ||
                         grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Log.i(TAG, "User denied WRITE_EXTERNAL_STORAGE permission.");
@@ -474,9 +464,8 @@ public class FirstStartActivity extends Activity {
                     Toast.makeText(this, R.string.permission_granted, Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "User granted WRITE_EXTERNAL_STORAGE permission.");
                 }
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+            default -> super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }

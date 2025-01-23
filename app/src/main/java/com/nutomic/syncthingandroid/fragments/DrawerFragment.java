@@ -235,19 +235,19 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.drawerActionWebGui:
+            case R.id.drawerActionWebGui -> {
                 startActivity(new Intent(mActivity, WebGuiActivity.class));
                 mActivity.closeDrawer();
-                break;
-            case R.id.drawerActionSettings:
+            }
+            case R.id.drawerActionSettings -> {
                 startActivity(new Intent(mActivity, SettingsActivity.class));
                 mActivity.closeDrawer();
-                break;
-            case R.id.drawerActionRestart:
+            }
+            case R.id.drawerActionRestart -> {
                 mActivity.showRestartDialog();
                 mActivity.closeDrawer();
-                break;
-            case R.id.drawerActionExit:
+            }
+            case R.id.drawerActionExit -> {
                 if (sharedPreferences != null && sharedPreferences.getBoolean(Constants.PREF_START_SERVICE_ON_BOOT, false)) {
                     /**
                      * App is running as a service. Show an explanation why exiting syncthing is an
@@ -259,17 +259,16 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                             .setPositiveButton(R.string.yes, (d, i) -> {
                                 doExit();
                             })
-                            .setNegativeButton(R.string.no, (d, i) -> {})
+                            .setNegativeButton(R.string.no, (d, i) -> {
+                            })
                             .show();
                 } else {
                     // App is not running as a service.
                     doExit();
                 }
                 mActivity.closeDrawer();
-                break;
-            case R.id.drawerActionShowQrCode:
-                showQrCode();
-                break;
+            }
+            case R.id.drawerActionShowQrCode -> showQrCode();
         }
     }
 

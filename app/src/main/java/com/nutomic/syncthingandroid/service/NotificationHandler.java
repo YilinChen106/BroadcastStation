@@ -136,20 +136,11 @@ public class NotificationHandler {
         // Prepare notification builder.
         int title = R.string.syncthing_terminated;
         switch (currentServiceState) {
-            case ERROR:
-            case INIT:
-                break;
-            case DISABLED:
-                title = R.string.syncthing_disabled;
-                break;
-            case STARTING:
-                title = R.string.syncthing_starting;
-                break;
-            case ACTIVE:
-                title = R.string.syncthing_active;
-                break;
-            default:
-                break;
+            case ERROR, INIT -> {}
+            case DISABLED -> title = R.string.syncthing_disabled;
+            case STARTING -> title = R.string.syncthing_starting;
+            case ACTIVE -> title = R.string.syncthing_active;
+            default -> {}
         }
 
         /**

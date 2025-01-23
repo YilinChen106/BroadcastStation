@@ -111,15 +111,15 @@ public class FolderActivity extends SyncthingActivity
         @Override
         public void onCheckedChanged(CompoundButton view, boolean isChecked) {
             switch (view.getId()) {
-                case R.id.fileWatcher:
+                case R.id.fileWatcher -> {
                     mFolder.fsWatcherEnabled = isChecked;
                     mFolderNeedsToUpdate = true;
-                    break;
-                case R.id.folderPause:
+                }
+                case R.id.folderPause -> {
                     mFolder.paused = isChecked;
                     mFolderNeedsToUpdate = true;
-                    break;
-                case R.id.device_toggle:
+                }
+                case R.id.device_toggle -> {
                     Device device = (Device) view.getTag();
                     if (isChecked) {
                         mFolder.addDevice(device.deviceID);
@@ -127,7 +127,7 @@ public class FolderActivity extends SyncthingActivity
                         mFolder.removeDevice(device.deviceID);
                     }
                     mFolderNeedsToUpdate = true;
-                    break;
+                }
             }
         }
     };
@@ -415,17 +415,17 @@ public class FolderActivity extends SyncthingActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.create:
+        return switch (item.getItemId()) {
+            case R.id.create -> {
                 if (TextUtils.isEmpty(mFolder.id)) {
                     Toast.makeText(this, R.string.folder_id_required, Toast.LENGTH_LONG)
                             .show();
-                    return true;
+                    yield true;
                 }
                 if (TextUtils.isEmpty(mFolder.path)) {
                     Toast.makeText(this, R.string.folder_path_required, Toast.LENGTH_LONG)
                             .show();
-                    return true;
+                    yield true;
                 }
                 if (mFolderUri != null) {
                     /**
@@ -445,16 +445,18 @@ public class FolderActivity extends SyncthingActivity
                 }
                 getApi().createFolder(mFolder);
                 finish();
-                return true;
-            case R.id.remove:
+                yield true;
+            }
+            case R.id.remove -> {
                 showDeleteDialog();
-                return true;
-            case android.R.id.home:
+                yield true;
+            }
+            case android.R.id.home -> {
                 onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+                yield true;
+            }
+            default -> super.onOptionsItemSelected(item);
+        };
     }
 
     private void showDeleteDialog(){
@@ -679,18 +681,15 @@ public class FolderActivity extends SyncthingActivity
         }
 
         switch (mFolder.type) {
-            case Constants.FOLDER_TYPE_SEND_RECEIVE:
-                setFolderTypeDescription(getString(R.string.folder_type_sendreceive),
-                        getString(R.string.folder_type_sendreceive_description));
-                break;
-            case Constants.FOLDER_TYPE_SEND_ONLY:
-                setFolderTypeDescription(getString(R.string.folder_type_sendonly),
-                        getString(R.string.folder_type_sendonly_description));
-                break;
-            case Constants.FOLDER_TYPE_RECEIVE_ONLY:
-                setFolderTypeDescription(getString(R.string.folder_type_receiveonly),
-                        getString(R.string.folder_type_receiveonly_description));
-                break;
+            case Constants.FOLDER_TYPE_SEND_RECEIVE ->
+                    setFolderTypeDescription(getString(R.string.folder_type_sendreceive),
+                            getString(R.string.folder_type_sendreceive_description));
+            case Constants.FOLDER_TYPE_SEND_ONLY ->
+                    setFolderTypeDescription(getString(R.string.folder_type_sendonly),
+                            getString(R.string.folder_type_sendonly_description));
+            case Constants.FOLDER_TYPE_RECEIVE_ONLY ->
+                    setFolderTypeDescription(getString(R.string.folder_type_receiveonly),
+                            getString(R.string.folder_type_receiveonly_description));
         }
     }
 
@@ -711,30 +710,23 @@ public class FolderActivity extends SyncthingActivity
         }
 
         switch (mFolder.order) {
-            case "random":
-                setPullOrderDescription(getString(R.string.pull_order_type_random),
-                        getString(R.string.pull_order_type_random_description));
-                break;
-            case "alphabetic":
-                setPullOrderDescription(getString(R.string.pull_order_type_alphabetic),
-                        getString(R.string.pull_order_type_alphabetic_description));
-                break;
-            case "smallestFirst":
-                setPullOrderDescription(getString(R.string.pull_order_type_smallestFirst),
-                        getString(R.string.pull_order_type_smallestFirst_description));
-                break;
-            case "largestFirst":
-                setPullOrderDescription(getString(R.string.pull_order_type_largestFirst),
-                        getString(R.string.pull_order_type_largestFirst_description));
-                break;
-            case "oldestFirst":
-                setPullOrderDescription(getString(R.string.pull_order_type_oldestFirst),
-                        getString(R.string.pull_order_type_oldestFirst_description));
-                break;
-            case "newestFirst":
-                setPullOrderDescription(getString(R.string.pull_order_type_newestFirst),
-                        getString(R.string.pull_order_type_newestFirst_description));
-                break;
+            case "random" -> setPullOrderDescription(getString(R.string.pull_order_type_random),
+                    getString(R.string.pull_order_type_random_description));
+            case "alphabetic" ->
+                    setPullOrderDescription(getString(R.string.pull_order_type_alphabetic),
+                            getString(R.string.pull_order_type_alphabetic_description));
+            case "smallestFirst" ->
+                    setPullOrderDescription(getString(R.string.pull_order_type_smallestFirst),
+                            getString(R.string.pull_order_type_smallestFirst_description));
+            case "largestFirst" ->
+                    setPullOrderDescription(getString(R.string.pull_order_type_largestFirst),
+                            getString(R.string.pull_order_type_largestFirst_description));
+            case "oldestFirst" ->
+                    setPullOrderDescription(getString(R.string.pull_order_type_oldestFirst),
+                            getString(R.string.pull_order_type_oldestFirst_description));
+            case "newestFirst" ->
+                    setPullOrderDescription(getString(R.string.pull_order_type_newestFirst),
+                            getString(R.string.pull_order_type_newestFirst_description));
         }
     }
 
@@ -754,23 +746,17 @@ public class FolderActivity extends SyncthingActivity
         }
 
         switch (mFolder.versioning.type) {
-            case "simple":
-                setVersioningDescription(getString(R.string.type_simple),
-                        getString(R.string.simple_versioning_info, mFolder.versioning.params.get("keep")));
-                break;
-            case "trashcan":
-                setVersioningDescription(getString(R.string.type_trashcan),
-                        getString(R.string.trashcan_versioning_info, mFolder.versioning.params.get("cleanoutDays")));
-                break;
-            case "staggered":
+            case "simple" -> setVersioningDescription(getString(R.string.type_simple),
+                    getString(R.string.simple_versioning_info, mFolder.versioning.params.get("keep")));
+            case "trashcan" -> setVersioningDescription(getString(R.string.type_trashcan),
+                    getString(R.string.trashcan_versioning_info, mFolder.versioning.params.get("cleanoutDays")));
+            case "staggered" -> {
                 int maxAge = (int) TimeUnit.SECONDS.toDays(Long.valueOf(mFolder.versioning.params.get("maxAge")));
                 setVersioningDescription(getString(R.string.type_staggered),
                         getString(R.string.staggered_versioning_info, maxAge, mFolder.versioning.params.get("versionsPath")));
-                break;
-            case "external":
-                setVersioningDescription(getString(R.string.type_external),
-                        getString(R.string.external_versioning_info, mFolder.versioning.params.get("command")));
-                break;
+            }
+            case "external" -> setVersioningDescription(getString(R.string.type_external),
+                    getString(R.string.external_versioning_info, mFolder.versioning.params.get("command")));
         }
     }
 

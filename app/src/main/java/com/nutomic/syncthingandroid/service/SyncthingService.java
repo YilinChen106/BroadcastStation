@@ -258,23 +258,20 @@ public class SyncthingService extends Service {
         if (action.equals("err_null")) return START_STICKY;
 
         switch (action) {
-            case ACTION_RESET_DATABASE: {
+            case ACTION_RESET_DATABASE -> {
                 shutdown(State.INIT, () -> {
                     new SyncthingRunnable(this, SyncthingRunnable.Command.resetdatabase).run();
                     launchStartupTask();
                 });
-                break;
             }
-            case ACTION_RESET_DELTAS: {
+            case ACTION_RESET_DELTAS -> {
                 shutdown(State.INIT, () -> {
                     new SyncthingRunnable(this, SyncthingRunnable.Command.resetdeltas).run();
                     launchStartupTask();
                 });
-                break;
             }
-            case ACTION_REFRESH_NETWORK_INFO: {
+            case ACTION_REFRESH_NETWORK_INFO -> {
                 mRunConditionMonitor.updateShouldRunDecision();
-                break;
             }
         }
 
@@ -282,25 +279,21 @@ public class SyncthingService extends Service {
             // mApi is not null due to State.ACTIVE
             assert mApi != null;
             switch (action) {
-                case ACTION_RESTART: {
+                case ACTION_RESTART -> {
                     shutdown(State.INIT, this::launchStartupTask);
-                    break;
                 }
-                case ACTION_IGNORE_DEVICE: {
+                case ACTION_IGNORE_DEVICE -> {
                     mApi.ignoreDevice(intent.getStringExtra(EXTRA_DEVICE_ID), intent.getStringExtra(EXTRA_DEVICE_NAME), intent.getStringExtra(EXTRA_DEVICE_ADDRESS));
                     mNotificationHandler.cancelConsentNotification(intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0));
-                    break;
                 }
-                case ACTION_IGNORE_FOLDER: {
+                case ACTION_IGNORE_FOLDER -> {
                     mApi.ignoreFolder(intent.getStringExtra(EXTRA_DEVICE_ID), intent.getStringExtra(EXTRA_FOLDER_ID), intent.getStringExtra(EXTRA_FOLDER_LABEL));
                     mNotificationHandler.cancelConsentNotification(intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0));
-                    break;
                 }
-                case ACTION_OVERRIDE_CHANGES: {
+                case ACTION_OVERRIDE_CHANGES -> {
                     mApi.overrideChanges(intent.getStringExtra(EXTRA_FOLDER_ID));
-                    break;
                 }
-                case ACTION_ADD_DEVICE_TO_FOLDER: {
+                case ACTION_ADD_DEVICE_TO_FOLDER -> {
                     if (getApi() == null) {
                         Log.e(TAG, "failed to get API instance, this should never happen");
                         Toast.makeText(this, "failed to get API instance!", Toast.LENGTH_SHORT).show();
@@ -368,7 +361,6 @@ public class SyncthingService extends Service {
                     case STARTING:
                     case ACTIVE:
                     case ERROR:
-                        break;
                     default:
                         break;
                 }

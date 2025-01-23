@@ -96,27 +96,14 @@ public class VersioningDialogActivity extends ThemedAppCompatActivity {
     }
 
     private Fragment getFragment(int selection) {
-        Fragment fragment = null;
-
-        switch (selection) {
-            case 0:
-                fragment = new NoVersioningFragment();
-                break;
-            case 1:
-                fragment = new TrashCanVersioningFragment();
-                break;
-            case 2:
-                fragment = new SimpleVersioningFragment();
-                break;
-            case 3:
-                fragment = new StaggeredVersioningFragment();
-                break;
-            case 4:
-                fragment = new ExternalVersioningFragment();
-                break;
-        }
-
-        return fragment;
+        return switch (selection) {
+            case 0 -> new NoVersioningFragment();
+            case 1 -> new TrashCanVersioningFragment();
+            case 2 -> new SimpleVersioningFragment();
+            case 3 -> new StaggeredVersioningFragment();
+            case 4 -> new ExternalVersioningFragment();
+            default -> null;
+        };
     }
 
     @Override
