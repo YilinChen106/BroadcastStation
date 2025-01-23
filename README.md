@@ -1,21 +1,33 @@
-# Discontinued
+> [!NOTE]
+> this project is a **fork** of [syncthing-android](https://github.com/syncthing/syncthing-android), which has been discontinued.
+>
+> i'll try to **keep development going, adding features, fixing issues and cleaning up code.**<br>
+> at the very least, **i'll try to keep up-to-date with upstream syncthing.**<br>
+>
+> this fork **does not conflict** with the official syncthing app,
+> although **it is recommended to remove the original app after migrating to avoid issues.**
+> <details>
+>    <summary><sub><i>you may view the original discontinuation notice here (doesn't apply to this fork)</i></sub></summary>
+>
+>    # Discontinued
+>
+>    This app is discontinued. The last release on Github and F-Droid will happen
+>    with the December 2024 Syncthing version. Interactions (issues, PRs) are limited
+>    now, and the entire repo will be archived after the last release. Thus all
+>    contributions are preserved for any future (re)use. The forum is still open for
+>    discussions and questions. I would kindly ask you to refrain from trying to
+>    challenge the decision or asking "why-type" questions - I wont engage with them.
+>
+>    The reason is a combination of Google making Play publishing something between
+>    hard and impossible and no active maintenance. The app saw no significant
+>    development for a long time and without Play releases I do no longer see enough
+>    benefit and/or have enough motivation to keep up the ongoing maintenance an app
+>    requires even without doing much, if any, changes.
+>
+>    Thanks a lot to everyone who ever contributed to this app!
+> </details>
 
-This app is discontinued. The last release on Github and F-Droid will happen
-with the December 2024 Syncthing version. Interactions (issues, PRs) are limited
-now, and the entire repo will be archived after the last release. Thus all
-contributions are preserved for any future (re)use. The forum is still open for
-discussions and questions. I would kindly ask you to refrain from trying to
-challenge the decision or asking "why-type" questions - I wont engage with them.
-
-The reason is a combination of Google making Play publishing something between
-hard and impossible and no active maintenance. The app saw no significant
-development for a long time and without Play releases I do no longer see enough
-benefit and/or have enough motivation to keep up the ongoing maintenance an app
-requires even without doing much, if any, changes.
-
-Thanks a lot to everyone who ever contributed to this app!
-
-# syncthing-android
+# Syncmeow
 
 [![License: MPLv2](https://img.shields.io/badge/License-MPLv2-blue.svg)](https://opensource.org/licenses/MPL-2.0)
 
@@ -68,7 +80,7 @@ follow them separately.
         specific version numbers to insert in the command above.
 2. Go (see https://docs.syncthing.net/dev/building#prerequisites for the
    required version)
-3. Java version 11 (if not present in ``$PATH``, you might need to set
+3. Java version 17 (if not present in ``$PATH``, you might need to set
    ``$JAVA_HOME`` accordingly)
 4. Python version 3
 
