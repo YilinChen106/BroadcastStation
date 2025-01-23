@@ -245,31 +245,56 @@ public class SyncthingService extends Service {
         if (intent == null)
             return START_STICKY;
 
-        if (ACTION_RESTART.equals(intent.getAction()) && mCurrentState == State.ACTIVE) {
-            shutdown(State.INIT, () -> launchStartupTask());
-        } else if (ACTION_RESET_DATABASE.equals(intent.getAction())) {
-            shutdown(State.INIT, () -> {
-                new SyncthingRunnable(this, SyncthingRunnable.Command.resetdatabase).run();
-                launchStartupTask();
-            });
-        } else if (ACTION_RESET_DELTAS.equals(intent.getAction())) {
-            shutdown(State.INIT, () -> {
-                new SyncthingRunnable(this, SyncthingRunnable.Command.resetdeltas).run();
-                launchStartupTask();
-            });
-        } else if (ACTION_REFRESH_NETWORK_INFO.equals(intent.getAction())) {
-            mRunConditionMonitor.updateShouldRunDecision();
-        } else if (ACTION_IGNORE_DEVICE.equals(intent.getAction()) && mCurrentState == State.ACTIVE) {
-            // mApi is not null due to State.ACTIVE
-            mApi.ignoreDevice(intent.getStringExtra(EXTRA_DEVICE_ID), intent.getStringExtra(EXTRA_DEVICE_NAME), intent.getStringExtra(EXTRA_DEVICE_ADDRESS));
-            mNotificationHandler.cancelConsentNotification(intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0));
-        } else if (ACTION_IGNORE_FOLDER.equals(intent.getAction()) && mCurrentState == State.ACTIVE) {
-            // mApi is not null due to State.ACTIVE
-            mApi.ignoreFolder(intent.getStringExtra(EXTRA_DEVICE_ID), intent.getStringExtra(EXTRA_FOLDER_ID), intent.getStringExtra(EXTRA_FOLDER_LABEL));
-            mNotificationHandler.cancelConsentNotification(intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0));
-        } else if (ACTION_OVERRIDE_CHANGES.equals(intent.getAction()) && mCurrentState == State.ACTIVE) {
-            mApi.overrideChanges(intent.getStringExtra(EXTRA_FOLDER_ID));
+        // return early to not break the switch statement below
+        String action = intent.getAction() != null ? intent.getAction() : "err_null";
+        if (action.equals("err_null")) return START_STICKY;
+
+        switch (action) {
+            case ACTION_RESET_DATABASE: {
+                shutdown(State.INIT, () -> {
+                    new SyncthingRunnable(this, SyncthingRunnable.Command.resetdatabase).run();
+                    launchStartupTask();
+                });
+                break;
+            }
+            case ACTION_RESET_DELTAS: {
+                shutdown(State.INIT, () -> {
+                    new SyncthingRunnable(this, SyncthingRunnable.Command.resetdeltas).run();
+                    launchStartupTask();
+                });
+                break;
+            }
+            case ACTION_REFRESH_NETWORK_INFO: {
+                mRunConditionMonitor.updateShouldRunDecision();
+                break;
+            }
         }
+
+        if (mCurrentState == State.ACTIVE) {
+            // mApi is not null due to State.ACTIVE
+            assert mApi != null;
+            switch (action) {
+                case ACTION_RESTART: {
+                    shutdown(State.INIT, this::launchStartupTask);
+                    break;
+                }
+                case ACTION_IGNORE_DEVICE: {
+                    mApi.ignoreDevice(intent.getStringExtra(EXTRA_DEVICE_ID), intent.getStringExtra(EXTRA_DEVICE_NAME), intent.getStringExtra(EXTRA_DEVICE_ADDRESS));
+                    mNotificationHandler.cancelConsentNotification(intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0));
+                    break;
+                }
+                case ACTION_IGNORE_FOLDER: {
+                    mApi.ignoreFolder(intent.getStringExtra(EXTRA_DEVICE_ID), intent.getStringExtra(EXTRA_FOLDER_ID), intent.getStringExtra(EXTRA_FOLDER_LABEL));
+                    mNotificationHandler.cancelConsentNotification(intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0));
+                    break;
+                }
+                case ACTION_OVERRIDE_CHANGES: {
+                    mApi.overrideChanges(intent.getStringExtra(EXTRA_FOLDER_ID));
+                    break;
+                }
+            }
+        }
+
         return START_STICKY;
     }
 
@@ -298,9 +323,7 @@ public class SyncthingService extends Service {
                     case INIT:
                         // HACK: Make sure there is no syncthing binary left running from an improper
                         // shutdown (eg Play Store update).
-                        shutdown(State.INIT, () -> {
-                            launchStartupTask();
-                        });
+                        shutdown(State.INIT, this::launchStartupTask);
                         break;
                     case STARTING:
                     case ACTIVE:
