@@ -216,6 +216,15 @@ public class EventProcessor implements  Runnable, RestApi.OnReceiveEventListener
         if (deviceId == null) {
             return;
         }
+
+        // prevent duplicate "add device" notifications for devices we already know
+        for (Device d : mApi.getDevices(false)) {
+            if (d.deviceID.equals(deviceId)) {
+                Log.w(TAG, "\"Unknown\" device " + deviceName + "(" + deviceId + ") is already known!");
+                return;
+            }
+        }
+
         Log.d(TAG, "Unknown device " + deviceName + "(" + deviceId + ") wants to connect");
 
         String title = mContext.getString(R.string.device_rejected,
