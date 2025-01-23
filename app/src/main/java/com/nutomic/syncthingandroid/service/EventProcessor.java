@@ -284,14 +284,31 @@ public class EventProcessor implements  Runnable, RestApi.OnReceiveEventListener
         // Prepare "accept" action.
         boolean isNewFolder = Stream.of(mApi.getFolders())
                 .noneMatch(f -> f.id.equals(folderId));
-        Intent intentAccept = new Intent(mContext, FolderActivity.class)
-                .putExtra(FolderActivity.EXTRA_NOTIFICATION_ID, notificationId)
-                .putExtra(FolderActivity.EXTRA_IS_CREATE, isNewFolder)
-                .putExtra(FolderActivity.EXTRA_DEVICE_ID, deviceId)
-                .putExtra(FolderActivity.EXTRA_FOLDER_ID, folderId)
-                .putExtra(FolderActivity.EXTRA_FOLDER_LABEL, folderLabel);
-        PendingIntent piAccept = PendingIntent.getActivity(mContext, notificationId,
-            intentAccept, Constants.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+
+        PendingIntent piAccept;
+        if (isNewFolder) {
+            Intent intentAccept = new Intent(mContext, FolderActivity.class)
+                    .putExtra(FolderActivity.EXTRA_NOTIFICATION_ID, notificationId)
+                    .putExtra(FolderActivity.EXTRA_IS_CREATE, true)
+                    .putExtra(FolderActivity.EXTRA_DEVICE_ID, deviceId)
+                    .putExtra(FolderActivity.EXTRA_FOLDER_ID, folderId)
+                    .putExtra(FolderActivity.EXTRA_FOLDER_LABEL, folderLabel);
+
+            piAccept = PendingIntent.getActivity(mContext, notificationId,
+                    intentAccept, Constants.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        } else {
+            // we already have the folder - no point in opening the app for that.
+            Log.d(TAG, "meowzers - folder ALREADY EXISTS WOOOOOOO");
+            Intent intentAccept = new Intent(mContext, SyncthingService.class)
+                    .putExtra(SyncthingService.EXTRA_NOTIFICATION_ID, notificationId)
+                    .putExtra(SyncthingService.EXTRA_DEVICE_ID, deviceId)
+                    .putExtra(SyncthingService.EXTRA_FOLDER_ID, folderId)
+                    .putExtra(SyncthingService.EXTRA_FOLDER_LABEL, folderLabel);
+            intentAccept.setAction(SyncthingService.ACTION_ADD_DEVICE_TO_FOLDER);
+
+            piAccept = PendingIntent.getService(mContext, notificationId,
+                    intentAccept, Constants.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        }
 
         // Prepare "ignore" action.
         Intent intentIgnore = new Intent(mContext, SyncthingService.class)

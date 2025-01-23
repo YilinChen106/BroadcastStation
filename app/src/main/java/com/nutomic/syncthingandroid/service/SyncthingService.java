@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -13,6 +14,7 @@ import com.google.common.io.Files;
 import com.nutomic.syncthingandroid.R;
 import com.nutomic.syncthingandroid.SyncthingApp;
 import com.nutomic.syncthingandroid.http.PollWebGuiAvailableTask;
+import com.nutomic.syncthingandroid.model.Folder;
 import com.nutomic.syncthingandroid.model.RunConditionCheckResult;
 import com.nutomic.syncthingandroid.util.ConfigXml;
 import com.nutomic.syncthingandroid.util.PermissionUtil;
@@ -23,6 +25,7 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
@@ -67,6 +70,11 @@ public class SyncthingService extends Service {
     public static final String ACTION_IGNORE_FOLDER =
             "com.nutomic.syncthingandroid.service.SyncthingService.IGNORE_FOLDER";
 
+    /**
+     * Intent action to permanently ignore a folder share request.
+     */
+    public static final String ACTION_ADD_DEVICE_TO_FOLDER =
+            "com.nutomic.syncthingandroid.service.SyncthingService.ACTION_ADD_DEVICE_TO_FOLDER";
     /**
      * Intent action to override folder changes.
      */
@@ -291,6 +299,38 @@ public class SyncthingService extends Service {
                 case ACTION_OVERRIDE_CHANGES: {
                     mApi.overrideChanges(intent.getStringExtra(EXTRA_FOLDER_ID));
                     break;
+                }
+                case ACTION_ADD_DEVICE_TO_FOLDER: {
+                    if (getApi() == null) {
+                        Log.e(TAG, "failed to get API instance, this should never happen");
+                        Toast.makeText(this, "failed to get API instance!", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+
+                    List<Folder> folders = getApi().getFolders();
+                    String passedFolderId = intent.getStringExtra(EXTRA_FOLDER_ID);
+                    String passedDeviceId = intent.getStringExtra(EXTRA_DEVICE_ID);
+                    Folder mFolder = null;
+
+                    for (Folder currentFolder : folders) {
+                        if (currentFolder.id.equals(passedFolderId)) {
+                            mFolder = currentFolder;
+                            break;
+                        }
+                    }
+
+                    // these toasts are temporary until i find a more user friendly way. probably won't ever change them tho lmao
+                    if (mFolder == null) {
+                        Log.e(TAG, "Folder not found in API update, maybe it was deleted?");
+                        Toast.makeText(this, "error: folder not found!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.i(TAG, "updating folder; adding device " + passedDeviceId);
+                        mFolder.addDevice(passedDeviceId);
+                        getApi().updateFolder(mFolder);
+                        Toast.makeText(this, "folder updated!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    mNotificationHandler.cancelConsentNotification(intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0));
                 }
             }
         }
