@@ -13,6 +13,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.nutomic.syncthingandroid.R;
+import com.nutomic.syncthingandroid.service.SyncthingRunnable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -147,7 +148,7 @@ public class LogActivity extends SyncthingActivity {
             try {
                 ProcessBuilder pb;
                 if (syncthingLog) {
-                    pb = new ProcessBuilder("/system/bin/logcat", "-t", "300", "-v", "time", "-s", "SyncthingNativeCode");
+                    pb = new ProcessBuilder("/system/bin/logcat", "-t", "300", "-v", "time", "-s", SyncthingRunnable.TAG_NATIVE);
                 } else {
                     pb = new ProcessBuilder("/system/bin/logcat", "-t", "300", "-v", "time", "*:i ps:s art:s");
                 }

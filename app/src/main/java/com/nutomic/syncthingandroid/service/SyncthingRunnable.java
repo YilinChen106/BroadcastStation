@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.nutomic.syncthingandroid.BuildConfig;
 import com.nutomic.syncthingandroid.R;
 import com.nutomic.syncthingandroid.SyncthingApp;
 import com.nutomic.syncthingandroid.service.Constants;
@@ -47,7 +48,7 @@ import eu.chainfire.libsuperuser.Shell;
 public class SyncthingRunnable implements Runnable {
 
     private static final String TAG = "SyncthingRunnable";
-    private static final String TAG_NATIVE = "SyncthingNativeCode";
+    public static final String TAG_NATIVE = "SyncmeowNativeCode-" + Integer.toHexString(Math.abs(BuildConfig.APPLICATION_ID.hashCode()));
     private static final String TAG_NICE = "SyncthingRunnableIoNice";
     private static final int LOG_FILE_MAX_LINES = 10;
 
@@ -120,6 +121,9 @@ public class SyncthingRunnable implements Runnable {
         } catch (IOException|InterruptedException e) {
             Log.w(TAG, "Failed to chmod Syncthing", e);
         }
+
+        Log.i(TAG, "SyncmeowNativeCode will log as: " + TAG_NATIVE);
+
         // Loop Syncthing
         Process process = null;
         // Potential fix for #498, keep the CPU running while native binary is running
