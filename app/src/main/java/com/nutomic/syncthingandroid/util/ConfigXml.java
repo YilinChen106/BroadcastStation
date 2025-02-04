@@ -307,21 +307,21 @@ public class ConfigXml {
      * Returns if changes to the config have been made.
      */
     private boolean changeDefaultFolder() {
-        Element folder = (Element) mConfig.getDocumentElement()
-                .getElementsByTagName("folder").item(0);
-        String deviceModel = Build.MODEL
-                .replace(" ", "_")
-                .toLowerCase(Locale.US)
-                .replaceAll("[^a-z0-9_-]", "");
-        String defaultFolderId = deviceModel + "_" + generateRandomString(FOLDER_ID_APPENDIX_LENGTH);
-        folder.setAttribute("label", mContext.getString(R.string.default_folder_label));
-        folder.setAttribute("id", mContext.getString(R.string.default_folder_id, defaultFolderId));
-        folder.setAttribute("path", Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath());
-        folder.setAttribute("type", Constants.FOLDER_TYPE_SEND_ONLY);
-        folder.setAttribute("fsWatcherEnabled", "true");
-        folder.setAttribute("fsWatcherDelayS", "10");
-        return true;
+//        Element folder = (Element) mConfig.getDocumentElement()
+//                .getElementsByTagName("folder").item(0);
+//        String deviceModel = Build.MODEL
+//                .replace(" ", "_")
+//                .toLowerCase(Locale.US)
+//                .replaceAll("[^a-z0-9_-]", "");
+//        String defaultFolderId = deviceModel + "_" + generateRandomString(FOLDER_ID_APPENDIX_LENGTH);
+//        folder.setAttribute("label", mContext.getString(R.string.default_folder_label));
+//        folder.setAttribute("id", mContext.getString(R.string.default_folder_id, defaultFolderId));
+//        folder.setAttribute("path", Environment
+//                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath());
+//        folder.setAttribute("type", Constants.FOLDER_TYPE_SEND_ONLY);
+//        folder.setAttribute("fsWatcherEnabled", "true");
+//        folder.setAttribute("fsWatcherDelayS", "10");
+        return false;
     }
 
     /**

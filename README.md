@@ -100,7 +100,7 @@ follow them separately.
 3. Navigate inside `syncthing-android`, then build the APK file with
    ```
    ./gradlew buildNative
-   ./gradlew assembleDebug
+   .\gradlew assembleDebug
    ```
 4. Once completed, `app-debug.apk` will be present inside `app/build/outputs/apk/debug`.
 
